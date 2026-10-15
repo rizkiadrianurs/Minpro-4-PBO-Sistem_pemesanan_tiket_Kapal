@@ -373,11 +373,11 @@ Implementasi `getJenisKapal()` pada `KapalEkonomi`:
 
 ---
 
-## Penerapan JDBC dan DAO
+### 5. Penerapan JDBC dan DAO
 
 Pada Minpro 4, program terhubung ke database MySQL menggunakan **JDBC** dengan driver `mysql-connector-j` (terdaftar pada `pom.xml`). Seluruh query menggunakan **Prepared Statement**, dan akses database dipisahkan ke dalam class **DAO** sehingga controller dan view tidak berisi kode SQL.
 
-### 1. Koneksi Database (`database/Koneksi.java`)
+### 5.1 Koneksi Database (`database/Koneksi.java`)
 
 <img width="716" height="475" alt="image" src="https://github.com/user-attachments/assets/94dc7c5a-f7dc-45d5-98c9-7253c07e7d97" />
 
@@ -385,11 +385,11 @@ Class `Koneksi` menyimpan `URL` (`jdbc:mysql://localhost:3306/db_pemesanan_kapal
 
 <img width="685" height="192" alt="image" src="https://github.com/user-attachments/assets/4b1b1b27-db3b-4fb6-90f6-5f6130316909" />
 
-### 2. Prepared Statement
+### 5.2 Prepared Statement
 
 Prepared Statement dipakai dengan tanda `?` sebagai placeholder, lalu nilainya diisi menggunakan `setString()` dan `setInt()`. Dengan cara ini nilai input tidak digabung langsung ke string SQL, sehingga lebih aman dari SQL Injection dan lebih rapi dibanding `Statement` biasa. Setiap `Connection`, `PreparedStatement`, dan `ResultSet` dibuka menggunakan **try-with-resources** sehingga otomatis ditutup, dan error SQL ditangani menggunakan `try-catch (SQLException)`.
 
-### 3. DAO (Data Access Object)
+### 5.3 DAO (Data Access Object)
 
 | DAO | Method | Jenis Query | SQL | Dipakai Pada |
 |---|---|---|---|---|
@@ -400,21 +400,20 @@ Prepared Statement dipakai dengan tanda `?` sebagai placeholder, lalu nilainya d
 | `PemesananDAO` | `hapus(int)` | Delete | `DELETE FROM pemesanan WHERE id_pemesanan = ?` | Menu Hapus Pemesanan. |
 | `PemesananDAO` | `cariIdKapal()` (private) | Read | `SELECT id_kapal FROM kapal WHERE nama_kapal = ?` | Mencari `id_kapal` sebelum `INSERT` dan `UPDATE`. |
 
-### **1. Create**
+### **A. Create**
 <img width="817" height="667" alt="image" src="https://github.com/user-attachments/assets/51491998-d417-4da7-887e-81671cc18787" />
 
-### **2. Read**
+### **B. Read**
 <img width="892" height="781" alt="image" src="https://github.com/user-attachments/assets/6f6fb945-c4f3-4b04-91fd-689f44e1e5b4" />
 
 <img width="777" height="758" alt="image" src="https://github.com/user-attachments/assets/a4ec97eb-64af-4d48-a39c-0ef7108421cc" />
 
 <img width="775" height="462" alt="image" src="https://github.com/user-attachments/assets/ffb22734-b268-45b9-9cc5-ad4eab07edcc" />
 
-
-### **3. Update**
+### **C. Update**
 <img width="802" height="823" alt="image" src="https://github.com/user-attachments/assets/bc738624-6fd5-40e2-b49c-48d4ff4ce88b" />
 
-### **4. Delete**
+### **D. Delete**
 <img width="763" height="561" alt="image" src="https://github.com/user-attachments/assets/db8bd35c-c412-43a6-a994-99434af029c8" />
 
 
@@ -426,7 +425,7 @@ Penjelasan singkat:
 - **Delete**: `hapus()` memakai `executeUpdate()` dengan kondisi `WHERE id_pemesanan = ?` dan mengembalikan `true` jika ada baris yang terhapus.
 - Tabel `pemesanan` berelasi dengan tabel `kapal` melalui foreign key `id_kapal`.
 
-### 4. Dummy Data dari File `.sql`
+### 6. Dummy Data dari File `.sql`
 
 Dummy data **tidak diisi lewat kode**, melainkan lewat file [`db_pemesanan_kapal.sql`](db_pemesanan_kapal.sql) yang berisi perintah `CREATE TABLE` dan `INSERT INTO` (3 data kapal dan 2 data pemesanan). Setelah file di-import, menu Tampilkan Pemesanan langsung menampilkan data tanpa input dari awal.
 
@@ -436,55 +435,55 @@ Dummy data **tidak diisi lewat kode**, melainkan lewat file [`db_pemesanan_kapal
 
 ## Penerapan Fitur Pendukung
 
-### 5. Validasi Input
+### Validasi Input
 
 Validasi input diterapkan di dua lapisan: pada **view** (saat pengguna mengetik) dan pada **setter model** (`Kapal`, `KapalVIP`, `KapalEkonomi`, dan `Penumpang`, sebagai lapisan pengaman data). Jika input tidak valid, sistem menampilkan pesan kesalahan dan meminta pengguna memasukkan ulang sampai benar.
 
-**5.1 ID Pemesanan**
+**1 ID Pemesanan**
 
 <img width="382" height="128" alt="image" src="https://github.com/user-attachments/assets/557744d3-42f1-402b-916f-6cb00b325ef1" />
 
 ID pemesanan **dibuat otomatis oleh database**, sehingga tidak perlu divalidasi saat menambah data dan tidak mungkin sama dengan ID lain. Validasi ID hanya dilakukan ketika pengguna memasukkan ID untuk **mencari data** pada menu Ubah dan Hapus: ID harus berupa angka dan lebih dari 0. Jika tidak sesuai, sistem menampilkan pesan "ID harus berupa angka." atau "ID harus lebih dari 0." dan meminta input ulang.
 
-**5.2 Nama Penumpang**
+**2 Nama Penumpang**
 
 <img width="425" height="130" alt="image" src="https://github.com/user-attachments/assets/9f1ce51c-e3ed-4ee3-8d3b-95a7498e3c4c" />
 
 Nama tidak boleh kosong.
 
-**5.3 NIK**
+**3 NIK**
 
 <img width="437" height="125" alt="image" src="https://github.com/user-attachments/assets/0e8a59cb-1f21-4885-8267-cf13de718d9c" />
 
 NIK harus terdiri dari tepat 16 digit dan hanya dapat berisi angka.
 
-**5.4 Umur**
+**4 Umur**
 
 <img width="307" height="175" alt="image" src="https://github.com/user-attachments/assets/8afa5d18-335e-40bf-b7d6-44b640767a14" />
 
 Umur harus berupa angka dan nilainya harus antara 1 sampai 120.
 
-**5.5 Pilihan Kapal**
+**5 Pilihan Kapal**
 
 <img width="538" height="435" alt="image" src="https://github.com/user-attachments/assets/05d93148-8d87-4345-ad64-eb514f014339" />
 
 Pengguna hanya dapat memilih kapal sesuai nomor yang tersedia pada daftar. Batas pilihan mengikuti jumlah data pada tabel `kapal` (pada dummy data: 1 sampai 3).
 
-**5.6 Jumlah Tiket**
+**6 Jumlah Tiket**
 
 <img width="355" height="48" alt="image" src="https://github.com/user-attachments/assets/a35157f7-bd26-4ba7-9981-7f559be4c448" />
 
 Jumlah tiket harus berupa angka dan nilainya harus lebih dari 0.
 
-**5.7 Pilihan Menu dan Konfirmasi Hapus**
+**7 Pilihan Menu dan Konfirmasi Hapus**
 
 Pilihan menu harus berupa angka 1 sampai 5, dan konfirmasi hapus hanya dapat dijawab dengan 1 atau 2.
 
-**1. Pilihan Menu**
+**A. Pilihan Menu**
 
 <img width="357" height="283" alt="image" src="https://github.com/user-attachments/assets/14bb9dcc-8a23-4716-a366-1c1475c29906" />
 
-**2. Konfirmasi Hapus**
+**B. Konfirmasi Hapus**
 
 <img width="278" height="191" alt="image" src="https://github.com/user-attachments/assets/81cbd61d-a3cb-43d4-ba42-bc6274347829" />
 
@@ -493,7 +492,7 @@ Selain validasi tersebut, program menggunakan `try-catch` untuk menangani `Numbe
 
 ---
 
-### 6. Interface
+### Interface
 
 Nilai tambah yang diterapkan pada proyek ini adalah **Interface** melalui `InformasiKapal` yang terdapat pada `model/InformasiKapal.java`. Interface digunakan sebagai **kontrak** yang menentukan method yang harus dimiliki oleh class yang mengimplementasikannya.
 
@@ -536,7 +535,7 @@ Pada `KapalEkonomi`, class juga menggunakan `implements InformasiKapal` dan meng
 
 Pada Minpro 4, objek kapal yang mengimplementasikan interface ini dibentuk dari data database oleh `KapalDAO`, sehingga class yang ingin menyediakan informasi dasar dan fasilitas tetap harus mengikuti kontrak yang telah ditentukan oleh `InformasiKapal`.
 
-### 7. Struktur MVC + DAO
+### Struktur MVC + DAO
 
 MVC diterapkan dengan memisahkan program ke dalam package `model`, `view`, `controller`, dan `main`. Pada Minpro 4 ditambahkan package `DAO` dan `database` agar kode akses database terpisah dari controller dan view (lihat bagian **Struktur Folder** di atas untuk susunan lengkapnya).
 
