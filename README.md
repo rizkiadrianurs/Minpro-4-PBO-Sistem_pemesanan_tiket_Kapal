@@ -78,6 +78,15 @@ Minpro-4-PBO-SistemPemesananTiketKapal
 | `Sistem_pemesanan_tiket_Kapal` | Main | Class utama yang berisi method `main`. |
 
 ---
+## Cara Menjalankan Program Pada Database
+
+1. Jalankan MySQL (misalnya melalui XAMPP).
+2. Import file `db_pemesanan_kapal.sql` ke MySQL (lewat phpMyAdmin atau perintah `mysql -u root -p < db_pemesanan_kapal.sql`). File ini membuat database, tabel, sekaligus dummy data.
+3. Sesuaikan `URL`, `USER`, dan `PASSWORD` pada `database/Koneksi.java` jika berbeda (bawaan: `localhost:3306`, user `root`, password kosong).
+4. Jalankan `database/TestKoneksi.java` untuk memastikan koneksi berhasil (muncul "Koneksi database berhasil!").
+5. Jalankan `main/Sistem_pemesanan_tiket_Kapal.java`. Dependensi `mysql-connector-j 8.3.0` sudah terdaftar di `pom.xml` (Maven).
+
+---
 
 ## Struktur Database
 
@@ -115,16 +124,6 @@ Database yang digunakan bernama **`db_pemesanan_kapal`** dengan dua tabel yang d
 | `id_kapal` | INT | Foreign key ke `kapal.id_kapal`. |
 | `jumlah_tiket` | INT | Jumlah tiket yang dipesan. |
 | `total_harga` | INT | Harga tiket × jumlah tiket. |
-
----
-
-## Cara Menjalankan Program Pada Database
-
-1. Jalankan MySQL (misalnya melalui XAMPP).
-2. Import file `db_pemesanan_kapal.sql` ke MySQL (lewat phpMyAdmin atau perintah `mysql -u root -p < db_pemesanan_kapal.sql`). File ini membuat database, tabel, sekaligus dummy data.
-3. Sesuaikan `URL`, `USER`, dan `PASSWORD` pada `database/Koneksi.java` jika berbeda (bawaan: `localhost:3306`, user `root`, password kosong).
-4. Jalankan `database/TestKoneksi.java` untuk memastikan koneksi berhasil (muncul "Koneksi database berhasil!").
-5. Jalankan `main/Sistem_pemesanan_tiket_Kapal.java`. Dependensi `mysql-connector-j 8.3.0` sudah terdaftar di `pom.xml` (Maven).
 
 ---
 
