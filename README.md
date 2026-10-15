@@ -10,7 +10,7 @@
 
 ## Deskripsi Singkat Program
 
-Program ini adalah Sistem Pemesanan Tiket Kapal yang digunakan untuk mencatat dan mengelola data pemesanan tiket kapal penumpang. Fokus program adalah menyimpan siapa penumpangnya (nama, NIK, umur), kapal apa yang dipilih (nama kapal, tujuan, jenis VIP atau Ekonomi), berapa tiket yang dipesan, serta total harga yang dihitung otomatis dari harga tiket dikali jumlah tiket. Program dijalankan melalui console/CLI dan merupakan pengembangan dari Minpro 3 dengan menambahkan **koneksi database MySQL menggunakan JDBC (Prepared Statement)** dan **pola DAO (Data Access Object)**, tanpa meninggalkan konsep **Encapsulation**, **Inheritance**, **Polymorphism**, **Abstraction**, **validasi input**, dan **struktur MVC** dari Minpro sebelumnya.
+Program ini adalah Sistem Pemesanan Tiket Kapal yang digunakan untuk mencatat dan mengelola data pemesanan tiket kapal penumpang. Fokus program adalah menyimpan siapa penumpangnya (nama, NIK, umur), kapal apa yang dipilih (nama kapal, tujuan, jenis VIP atau Ekonomi), berapa tiket yang dipesan, serta total harga yang dihitung otomatis dari harga tiket dikali jumlah tiket. Program dijalankan melalui console/CLI dan merupakan pengembangan dari Minpro 3 dengan menambahkan koneksi database MySQL menggunakan JDBC (Prepared Statement) dan pola DAO (Data Access Object), tanpa meninggalkan konsep Encapsulation, Inheritance, Polymorphism, Abstraction, validasi input, dan struktur MVC dari Minpro sebelumnya.
 
 Pengguna dapat melakukan beberapa proses, yaitu:
 
