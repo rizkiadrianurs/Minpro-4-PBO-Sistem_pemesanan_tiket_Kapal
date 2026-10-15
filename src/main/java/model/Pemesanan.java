@@ -9,61 +9,95 @@ package model;
  */
 public class Pemesanan {
 
-    private static int nomorBerikutnya = 1;
-
-    private final String idPemesanan;
-    private Penumpang penumpang;
-    private Kapal kapal;
+    private int idPemesanan;
+    private String namaPenumpang;
+    private String nik;
+    private int umur;
+    private String namaKapal;
     private int jumlahTiket;
+    private int hargaTiket;
 
-    public Pemesanan(Penumpang penumpang, Kapal kapal, int jumlahTiket) {
+    public Pemesanan(String namaPenumpang, String nik, int umur,
+            String namaKapal, int jumlahTiket, int hargaTiket) {
 
-        idPemesanan = String.format("%03d", nomorBerikutnya++);
-
-        setPenumpang(penumpang);
-        setKapal(kapal);
-        setJumlahTiket(jumlahTiket);
+        this.namaPenumpang = namaPenumpang;
+        this.nik = nik;
+        this.umur = umur;
+        this.namaKapal = namaKapal;
+        this.jumlahTiket = jumlahTiket;
+        this.hargaTiket = hargaTiket;
     }
 
-    public Pemesanan(Penumpang penumpang, Kapal kapal) {
-        this(penumpang, kapal, 1);
+    public Pemesanan(int idPemesanan, String namaPenumpang,
+            String nik, int umur, String namaKapal,
+            int jumlahTiket, int hargaTiket) {
+
+        this.idPemesanan = idPemesanan;
+        this.namaPenumpang = namaPenumpang;
+        this.nik = nik;
+        this.umur = umur;
+        this.namaKapal = namaKapal;
+        this.jumlahTiket = jumlahTiket;
+        this.hargaTiket = hargaTiket;
     }
 
-    public String getIdPemesanan() {
+    public int getIdPemesanan() {
         return idPemesanan;
     }
 
-    public Penumpang getPenumpang() {
-        return penumpang;
+    public void setIdPemesanan(int idPemesanan) {
+        this.idPemesanan = idPemesanan;
     }
 
-    public Kapal getKapal() {
-        return kapal;
+    public String getNamaPenumpang() {
+        return namaPenumpang;
+    }
+
+    public void setNamaPenumpang(String namaPenumpang) {
+        this.namaPenumpang = namaPenumpang;
+    }
+
+    public String getNik() {
+        return nik;
+    }
+
+    public void setNik(String nik) {
+        this.nik = nik;
+    }
+
+    public int getUmur() {
+        return umur;
+    }
+
+    public void setUmur(int umur) {
+        this.umur = umur;
+    }
+
+    public String getNamaKapal() {
+        return namaKapal;
+    }
+
+    public void setNamaKapal(String namaKapal) {
+        this.namaKapal = namaKapal;
     }
 
     public int getJumlahTiket() {
         return jumlahTiket;
     }
 
-    public void setPenumpang(Penumpang penumpang) {
-        if (penumpang != null) {
-            this.penumpang = penumpang;
-        }
-    }
-
-    public void setKapal(Kapal kapal) {
-        if (kapal != null) {
-            this.kapal = kapal;
-        }
-    }
-
     public void setJumlahTiket(int jumlahTiket) {
-        if (jumlahTiket > 0) {
-            this.jumlahTiket = jumlahTiket;
-        }
+        this.jumlahTiket = jumlahTiket;
+    }
+
+    public int getHargaTiket() {
+        return hargaTiket;
+    }
+
+    public void setHargaTiket(int hargaTiket) {
+        this.hargaTiket = hargaTiket;
     }
 
     public int getTotalHarga() {
-        return kapal.getHargaTiket() * jumlahTiket;
+        return hargaTiket * jumlahTiket;
     }
 }

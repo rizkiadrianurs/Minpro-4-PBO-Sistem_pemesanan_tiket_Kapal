@@ -4,12 +4,11 @@
  */
 package controller;
 
-import java.util.ArrayList;
+import DAO.KapalDAO;
+import DAO.PemesananDAO;
+import java.util.List;
 import model.Kapal;
-import model.KapalEkonomi;
-import model.KapalVIP;
 import model.Pemesanan;
-import model.Penumpang;
 import view.PemesananView;
 
 /**
@@ -18,62 +17,11 @@ import view.PemesananView;
  */
 public class PemesananController {
 
-    private final ArrayList<Pemesanan> daftarPemesanan;
-    private final PemesananView view;
-
-    public PemesananController() {
-        daftarPemesanan = new ArrayList<>();
-        view = new PemesananView();
-
-        isiDummyData();
-    }
-
-    private void isiDummyData() {
-
-        Penumpang penumpang1 = new Penumpang(
-                "Andi",
-                "6471012345678901",
-                20
-        );
-
-        Kapal kapal1 = new KapalVIP(
-                "KM Bukit Siguntang",
-                "Balikpapan",
-                150000,
-                "Kabin pribadi"
-        );
-
-        Pemesanan pemesanan1 = new Pemesanan(
-                penumpang1,
-                kapal1,
-                2
-        );
-
-        Penumpang penumpang2 = new Penumpang(
-                "Budi",
-                "6471012345678902",
-                21
-        );
-
-        Kapal kapal2 = new KapalEkonomi(
-                "KM Lambelu",
-                "Makassar",
-                200000,
-                "Kursi penumpang"
-        );
-
-        Pemesanan pemesanan2 = new Pemesanan(
-                penumpang2,
-                kapal2,
-                1
-        );
-
-        daftarPemesanan.add(pemesanan1);
-        daftarPemesanan.add(pemesanan2);
-    }
+    private final PemesananDAO pemesananDAO = new PemesananDAO();
+    private final KapalDAO kapalDAO = new KapalDAO();
+    private final PemesananView view = new PemesananView();
 
     public void jalankanProgram() {
-
         int pilihan;
 
         do {
@@ -81,174 +29,161 @@ public class PemesananController {
             pilihan = view.inputPilihanMenu();
 
             switch (pilihan) {
-
-                case 1 -> tambahPemesanan();
-
-                case 2 -> tampilkanPemesanan();
-
-                case 3 -> ubahPemesanan();
-
-                case 4 -> hapusPemesanan();
-
-                case 5 -> {
-                    view.tampilkanPesan("\nProgram selesai.");
-                    view.tampilkanPesan("Terima kasih.");
-                }
+                case 1:
+                    tambahPemesanan();
+                    break;
+                case 2:
+                    tampilkanPemesanan();
+                    break;
+                case 3:
+                    ubahPemesanan();
+                    break;
+                case 4:
+                    hapusPemesanan();
+                    break;
+                case 5:
+                    view.tampilkanPesan("Program selesai. Terima kasih.");
+                    break;
             }
-
         } while (pilihan != 5);
     }
 
-    private void tambahPemesanan() {
+    private void tampilkanPilihanKapal(List<Kapal> daftar) {
+        System.out.println("\nPilihan Kapal:");
 
-        System.out.println();
-        System.out.println("===== TAMBAH PEMESANAN =====");
+        for (int i = 0; i < daftar.size(); i++) {
+            Kapal k = daftar.get(i);
+
+            System.out.println((i + 1) + ". "
+                    + k.getNamaKapal() + " - "
+                    + k.getTujuan() + " - "
+                    + k.getJenisKapal() + " - Rp"
+                    + k.getHargaTiket());
+        }
+    }
+
+    private void tambahPemesanan() {
+        System.out.println("\n===== TAMBAH PEMESANAN =====");
 
         String nama = view.inputNama();
         String nik = view.inputNik();
         int umur = view.inputUmur();
 
-        int pilihKapal = view.inputPilihanKapal();
+        List<Kapal> daftarKapal = kapalDAO.getAll();
 
-        Kapal kapal = buatKapal(pilihKapal);
+        if (daftarKapal.isEmpty()) {
+            view.tampilkanPesan("Data kapal belum tersedia.");
+            return;
+        }
 
-        int jumlahTiket = view.inputJumlahTiket();
+        tampilkanPilihanKapal(daftarKapal);
 
-        Penumpang penumpang = new Penumpang(
+        int pilihan = view.inputPilihanKapal(daftarKapal.size());
+        Kapal kapal = daftarKapal.get(pilihan - 1);
+
+        int jumlah = view.inputJumlahTiket();
+
+        Pemesanan p = new Pemesanan(
                 nama,
                 nik,
-                umur
+                umur,
+                kapal.getNamaKapal(),
+                jumlah,
+                kapal.getHargaTiket()
         );
 
-        Pemesanan pemesanan = new Pemesanan(
-                penumpang,
-                kapal,
-                jumlahTiket
-        );
+        int id = pemesananDAO.tambah(p);
 
-        daftarPemesanan.add(pemesanan);
-
-        System.out.println();
-        System.out.println("Pemesanan berhasil ditambahkan.");
-        System.out.println("ID Pemesanan : "
-                + pemesanan.getIdPemesanan());
-        System.out.println("Total Harga   : Rp"
-                + pemesanan.getTotalHarga());
+        if (id > 0) {
+            view.tampilkanPesan("Pemesanan berhasil ditambahkan.");
+            view.tampilkanPesan(
+                    "ID Pemesanan: " + String.format("%03d", id));
+            view.tampilkanPesan("Total Harga: Rp" + p.getTotalHarga());
+        } else {
+            view.tampilkanPesan("Pemesanan gagal ditambahkan.");
+        }
     }
 
     private void tampilkanPemesanan() {
-        view.tampilkanDaftarPemesanan(daftarPemesanan);
+        List<Pemesanan> daftar = pemesananDAO.getAll();
+        view.tampilkanDaftarPemesanan(daftar);
     }
 
     private void ubahPemesanan() {
+        System.out.println("\n===== UBAH PEMESANAN =====");
 
-        System.out.println();
-        System.out.println("===== UBAH PEMESANAN =====");
+        int id = view.inputIdCari();
+        List<Pemesanan> daftar = pemesananDAO.getAll();
 
-        String idCari = view.inputIdCari();
+        for (Pemesanan p : daftar) {
+            if (p.getIdPemesanan() == id) {
+                String nama = view.inputNama();
+                String nik = view.inputNik();
+                int umur = view.inputUmur();
 
-        for (Pemesanan p : daftarPemesanan) {
+                List<Kapal> daftarKapal = kapalDAO.getAll();
 
-            if (p.getIdPemesanan().equals(idCari)) {
+                if (daftarKapal.isEmpty()) {
+                    view.tampilkanPesan("Data kapal belum tersedia.");
+                    return;
+                }
 
-                String namaBaru = view.inputNama();
-                String nikBaru = view.inputNik();
-                int umurBaru = view.inputUmur();
+                tampilkanPilihanKapal(daftarKapal);
 
-                int pilihKapalBaru =
-                        view.inputPilihanKapalBaru();
+                int pilihan = view.inputPilihanKapalBaru(
+                        daftarKapal.size());
 
-                Kapal kapalBaru =
-                        buatKapal(pilihKapalBaru);
+                Kapal kapal = daftarKapal.get(pilihan - 1);
 
-                int jumlahBaru =
-                        view.inputJumlahTiketBaru();
+                int jumlah = view.inputJumlahTiketBaru();
 
-                p.getPenumpang().setNama(namaBaru);
-                p.getPenumpang().setNik(nikBaru);
-                p.getPenumpang().setUmur(umurBaru);
+                p.setNamaPenumpang(nama);
+                p.setNik(nik);
+                p.setUmur(umur);
+                p.setNamaKapal(kapal.getNamaKapal());
+                p.setHargaTiket(kapal.getHargaTiket());
+                p.setJumlahTiket(jumlah);
 
-                p.setKapal(kapalBaru);
-                p.setJumlahTiket(jumlahBaru);
-
-                System.out.println();
-                System.out.println("Data berhasil diubah.");
-
-                return;
-            }
-        }
-
-        System.out.println("ID Pemesanan tidak ditemukan.");
-    }
-
-    private void hapusPemesanan() {
-
-        System.out.println();
-        System.out.println("===== HAPUS PEMESANAN =====");
-
-        String idHapus = view.inputIdCari();
-
-        for (int i = 0; i < daftarPemesanan.size(); i++) {
-
-            Pemesanan p = daftarPemesanan.get(i);
-
-            if (p.getIdPemesanan().equals(idHapus)) {
-
-                System.out.println();
-                System.out.println("Data ditemukan.");
-                System.out.println("Nama Penumpang : "
-                        + p.getPenumpang().getNama());
-
-                int konfirmasi =
-                        view.inputKonfirmasiHapus();
-
-                if (konfirmasi == 1) {
-
-                    daftarPemesanan.remove(i);
-                    System.out.println("Data berhasil dihapus.");
-
+                if (pemesananDAO.ubah(p)) {
+                    view.tampilkanPesan("Data berhasil diubah.");
                 } else {
-
-                    System.out.println(
-                            "Penghapusan dibatalkan."
-                    );
+                    view.tampilkanPesan("Data gagal diubah.");
                 }
 
                 return;
             }
         }
 
-        System.out.println("ID Pemesanan tidak ditemukan.");
+        view.tampilkanPesan("ID Pemesanan tidak ditemukan.");
     }
 
-    private Kapal buatKapal(int pilihan) {
+    private void hapusPemesanan() {
+        System.out.println("\n===== HAPUS PEMESANAN =====");
 
-        if (pilihan == 1) {
+        int id = view.inputIdCari();
+        List<Pemesanan> daftar = pemesananDAO.getAll();
 
-            return new KapalVIP(
-                    "KM Bukit Siguntang",
-                    "Balikpapan",
-                    150000,
-                    "Kabin pribadi"
-            );
+        for (Pemesanan p : daftar) {
+            if (p.getIdPemesanan() == id) {
+                view.tampilkanPesan(
+                        "Nama Penumpang: " + p.getNamaPenumpang());
 
-        } else if (pilihan == 2) {
+                int konfirmasi = view.inputKonfirmasiHapus();
 
-            return new KapalEkonomi(
-                    "KM Lambelu",
-                    "Makassar",
-                    200000,
-                    "Kursi penumpang"
-            );
+                if (konfirmasi == 1) {
+                    if (pemesananDAO.hapus(id)) {
+                        view.tampilkanPesan("Data berhasil dihapus.");
+                    } else {
+                        view.tampilkanPesan("Data gagal dihapus.");
+                    }
+                } else {
+                    view.tampilkanPesan("Penghapusan dibatalkan.");
+                }
 
-        } else {
-
-            return new KapalEkonomi(
-                    "KM Dorolonda",
-                    "Parepare",
-                    175000,
-                    "Kursi penumpang"
-            );
+                return;
+            }
         }
+
+        view.tampilkanPesan("ID Pemesanan tidak ditemukan.");
     }
 }

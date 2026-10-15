@@ -4,26 +4,19 @@
  */
 package view;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
-import model.InformasiKapal;
 import model.Pemesanan;
-
 /**
  *
  * @author ACER
  */
 public class PemesananView {
 
-    private Scanner input;
-
-    public PemesananView() {
-        input = new Scanner(System.in);
-    }
+    private final Scanner input = new Scanner(System.in);
 
     public void tampilkanMenu() {
-        System.out.println();
-        System.out.println("===================================");
+        System.out.println("\n===================================");
         System.out.println("    SISTEM PEMESANAN TIKET KAPAL");
         System.out.println("===================================");
         System.out.println("1. Tambah Pemesanan");
@@ -35,424 +28,190 @@ public class PemesananView {
     }
 
     public int inputPilihanMenu() {
-
         while (true) {
-
             System.out.print("Pilih menu: ");
 
             try {
-                int pilihan =
-                        Integer.parseInt(input.nextLine());
+                int pilihan = Integer.parseInt(input.nextLine());
 
                 if (pilihan >= 1 && pilihan <= 5) {
                     return pilihan;
                 }
 
-                System.out.println(
-                        "Pilihan menu harus 1-5."
-                );
+                System.out.println("Pilihan harus 1 sampai 5.");
 
             } catch (NumberFormatException e) {
-
-                System.out.println(
-                        "Input harus berupa angka."
-                );
+                System.out.println("Input harus berupa angka.");
             }
         }
     }
 
     public String inputNama() {
-
         while (true) {
+            System.out.print("Nama Penumpang: ");
+            String nama = input.nextLine().trim();
 
-            System.out.print("Nama Penumpang : ");
-            String nama = input.nextLine();
-
-            if (nama.trim().isEmpty()) {
-
-                System.out.println(
-                        "Nama tidak boleh kosong."
-                );
-
-                continue;
-            }
-
-            boolean namaValid = true;
-
-            for (int i = 0; i < nama.length(); i++) {
-
-                char karakter = nama.charAt(i);
-
-                if (!Character.isLetter(karakter)
-                        && karakter != ' ') {
-
-                    namaValid = false;
-                    break;
-                }
-            }
-
-            if (namaValid) {
+            if (!nama.isEmpty()) {
                 return nama;
             }
 
-            System.out.println(
-                    "Nama hanya boleh berisi huruf dan spasi."
-            );
+            System.out.println("Nama tidak boleh kosong.");
         }
     }
 
     public String inputNik() {
-
         while (true) {
+            System.out.print("NIK: ");
+            String nik = input.nextLine().trim();
 
-            System.out.print("NIK            : ");
-            String nik = input.nextLine();
+            if (nik.length() == 16) {
+                boolean angka = true;
 
-            if (nik.length() != 16) {
-
-                System.out.println(
-                        "NIK harus terdiri dari 16 digit."
-                );
-
-                continue;
-            }
-
-            boolean nikValid = true;
-
-            for (int i = 0; i < nik.length(); i++) {
-
-                if (!Character.isDigit(nik.charAt(i))) {
-
-                    nikValid = false;
-                    break;
-                }
-            }
-
-            if (nikValid) {
-                return nik;
-            }
-
-            System.out.println(
-                    "NIK hanya boleh berisi angka."
-            );
-        }
-    }
-
-    public int inputUmur() {
-
-        while (true) {
-
-            System.out.print("Umur           : ");
-            String inputUmur = input.nextLine();
-
-            if (inputUmur.trim().isEmpty()) {
-
-                System.out.println(
-                        "Umur tidak boleh kosong."
-                );
-
-                continue;
-            }
-
-            if (inputUmur.length() > 3) {
-
-                System.out.println(
-                        "Umur maksimal 3 angka."
-                );
-
-                continue;
-            }
-
-            boolean umurValid = true;
-
-            for (int i = 0; i < inputUmur.length(); i++) {
-
-                if (!Character.isDigit(
-                        inputUmur.charAt(i))) {
-
-                    umurValid = false;
-                    break;
-                }
-            }
-
-            if (!umurValid) {
-
-                System.out.println(
-                        "Umur hanya boleh berupa angka."
-                );
-
-                continue;
-            }
-
-            int umur = Integer.parseInt(inputUmur);
-
-            if (umur <= 0) {
-
-                System.out.println(
-                        "Umur harus lebih dari 0."
-                );
-
-                continue;
-            }
-
-            return umur;
-        }
-    }
-
-    public int inputPilihanKapal() {
-
-        while (true) {
-
-            System.out.println();
-            System.out.println("Pilihan Kapal:");
-            System.out.println(
-                    "1. KM Bukit Siguntang - Balikpapan - VIP - Rp150000"
-            );
-            System.out.println(
-                    "2. KM Lambelu - Makassar - Ekonomi - Rp200000"
-            );
-            System.out.println(
-                    "3. KM Dorolonda - Parepare - Ekonomi - Rp175000"
-            );
-
-            System.out.print("Pilih kapal: ");
-
-            try {
-
-                int pilihan =
-                        Integer.parseInt(input.nextLine());
-
-                if (pilihan >= 1 && pilihan <= 3) {
-                    return pilihan;
-                }
-
-                System.out.println(
-                        "Pilihan kapal hanya 1-3."
-                );
-
-            } catch (NumberFormatException e) {
-
-                System.out.println(
-                        "Input harus berupa angka."
-                );
-            }
-        }
-    }
-
-    public int inputJumlahTiket() {
-
-        while (true) {
-
-            System.out.print("Jumlah Tiket   : ");
-
-            try {
-
-                int jumlah =
-                        Integer.parseInt(input.nextLine());
-
-                if (jumlah > 0) {
-                    return jumlah;
-                }
-
-                System.out.println(
-                        "Jumlah tiket harus lebih dari 0."
-                );
-
-            } catch (NumberFormatException e) {
-
-                System.out.println(
-                        "Jumlah tiket harus berupa angka."
-                );
-            }
-        }
-    }
-
-    public String inputIdCari() {
-
-        while (true) {
-
-            System.out.print(
-                    "Masukkan ID Pemesanan: "
-            );
-
-            String id = input.nextLine();
-
-            if (id.length() == 3) {
-
-                boolean idValid = true;
-
-                for (int i = 0; i < id.length(); i++) {
-
-                    if (!Character.isDigit(id.charAt(i))) {
-
-                        idValid = false;
+                for (int i = 0; i < nik.length(); i++) {
+                    if (!Character.isDigit(nik.charAt(i))) {
+                        angka = false;
                         break;
                     }
                 }
 
-                if (idValid) {
-                    return id;
+                if (angka) {
+                    return nik;
                 }
             }
 
-            System.out.println(
-                    "ID pemesanan harus terdiri dari 3 digit."
-            );
+            System.out.println("NIK harus terdiri dari 16 digit.");
         }
     }
 
-    public int inputPilihanKapalBaru() {
-        return inputPilihanKapal();
-    }
-
-    public int inputJumlahTiketBaru() {
-
+    public int inputUmur() {
         while (true) {
-
-            System.out.print(
-                    "Jumlah Tiket Baru : "
-            );
+            System.out.print("Umur: ");
 
             try {
+                int umur = Integer.parseInt(input.nextLine());
 
-                int jumlah =
-                        Integer.parseInt(input.nextLine());
+                if (umur > 0 && umur <= 120) {
+                    return umur;
+                }
+
+                System.out.println("Umur harus 1 sampai 120.");
+
+            } catch (NumberFormatException e) {
+                System.out.println("Umur harus berupa angka.");
+            }
+        }
+    }
+
+    public int inputPilihanKapal(int jumlahKapal) {
+        while (true) {
+            System.out.print("Pilih kapal (1-" + jumlahKapal + "): ");
+
+            try {
+                int pilihan = Integer.parseInt(input.nextLine());
+
+                if (pilihan >= 1 && pilihan <= jumlahKapal) {
+                    return pilihan;
+                }
+
+                System.out.println("Pilihan kapal tidak tersedia.");
+
+            } catch (NumberFormatException e) {
+                System.out.println("Input harus berupa angka.");
+            }
+        }
+    }
+
+    public int inputPilihanKapalBaru(int jumlahKapal) {
+        return inputPilihanKapal(jumlahKapal);
+    }
+
+    public int inputJumlahTiket() {
+        while (true) {
+            System.out.print("Jumlah Tiket: ");
+
+            try {
+                int jumlah = Integer.parseInt(input.nextLine());
 
                 if (jumlah > 0) {
                     return jumlah;
                 }
 
-                System.out.println(
-                        "Jumlah tiket harus lebih dari 0."
-                );
+                System.out.println("Jumlah tiket harus lebih dari 0.");
 
             } catch (NumberFormatException e) {
+                System.out.println("Jumlah tiket harus berupa angka.");
+            }
+        }
+    }
 
-                System.out.println(
-                        "Jumlah tiket harus berupa angka."
-                );
+    public int inputJumlahTiketBaru() {
+        return inputJumlahTiket();
+    }
+
+    public int inputIdCari() {
+        while (true) {
+            System.out.print("Masukkan ID Pemesanan: ");
+
+            try {
+                int id = Integer.parseInt(input.nextLine());
+
+                if (id > 0) {
+                    return id;
+                }
+
+                System.out.println("ID harus lebih dari 0.");
+
+            } catch (NumberFormatException e) {
+                System.out.println("ID harus berupa angka.");
             }
         }
     }
 
     public int inputKonfirmasiHapus() {
-
         while (true) {
-
-            System.out.println();
-            System.out.println(
-                    "Apakah yakin ingin menghapus?"
-            );
             System.out.println("1. Ya, hapus data");
             System.out.println("2. Tidak, batalkan");
             System.out.print("Pilih: ");
 
             try {
-
-                int pilihan =
-                        Integer.parseInt(input.nextLine());
+                int pilihan = Integer.parseInt(input.nextLine());
 
                 if (pilihan == 1 || pilihan == 2) {
                     return pilihan;
                 }
 
-                System.out.println(
-                        "Pilihan hanya 1 atau 2."
-                );
+                System.out.println("Pilih 1 atau 2.");
 
             } catch (NumberFormatException e) {
-
-                System.out.println(
-                        "Input harus berupa angka."
-                );
+                System.out.println("Input harus berupa angka.");
             }
         }
     }
 
-    public void tampilkanDaftarPemesanan(
-            ArrayList<Pemesanan> daftarPemesanan) {
+    public void tampilkanDaftarPemesanan(List<Pemesanan> daftar) {
+        System.out.println("\n===== DAFTAR PEMESANAN =====");
 
-        System.out.println();
-        System.out.println(
-                "===== DAFTAR PEMESANAN ====="
-        );
-
-        if (daftarPemesanan.isEmpty()) {
-
-            System.out.println(
-                    "Belum ada data pemesanan."
-            );
-
+        if (daftar.isEmpty()) {
+            System.out.println("Belum ada data pemesanan.");
             return;
         }
 
-        for (int i = 0;
-                i < daftarPemesanan.size();
-                i++) {
+        for (int i = 0; i < daftar.size(); i++) {
+            Pemesanan p = daftar.get(i);
 
-            Pemesanan p =
-                    daftarPemesanan.get(i);
-
-            System.out.println();
-            System.out.println(
-                    "Data ke-" + (i + 1)
-            );
-            System.out.println(
-                    "-----------------------------------"
-            );
-
-            System.out.println(
-                    "ID Pemesanan   : "
-                    + p.getIdPemesanan()
-            );
-
-            System.out.println(
-                    "Nama Penumpang : "
-                    + p.getPenumpang().getNama()
-            );
-
-            System.out.println(
-                    "NIK            : "
-                    + p.getPenumpang().getNik()
-            );
-
-            System.out.println(
-                    "Umur           : "
-                    + p.getPenumpang().getUmur()
-            );
-
-            System.out.println();
-            System.out.println("Informasi Kapal:");
-
-            if (p.getKapal() instanceof InformasiKapal) {
-
-                InformasiKapal informasi =
-                        (InformasiKapal) p.getKapal();
-
-                informasi.tampilkanInformasiDasar();
-                informasi.tampilkanFasilitas();
-
-            } else {
-
-                System.out.println(
-                        "Informasi kapal tidak tersedia."
-                );
-            }
-
-            System.out.println();
-            System.out.println(
-                    "Jumlah Tiket   : "
-                    + p.getJumlahTiket()
-            );
-
-            System.out.println(
-                    "Total Harga    : Rp"
-                    + p.getTotalHarga()
-            );
-
-            System.out.println(
-                    "-----------------------------------"
-            );
+            System.out.println("\nData ke-" + (i + 1));
+            System.out.println("-----------------------------------");
+            System.out.printf("ID Pemesanan   : %03d%n",
+                    p.getIdPemesanan());
+            System.out.println("Nama Penumpang : "
+                    + p.getNamaPenumpang());
+            System.out.println("NIK            : " + p.getNik());
+            System.out.println("Umur           : " + p.getUmur());
+            System.out.println("Nama Kapal     : " + p.getNamaKapal());
+            System.out.println("Jumlah Tiket   : " + p.getJumlahTiket());
+            System.out.println("Harga Tiket    : Rp" + p.getHargaTiket());
+            System.out.println("Total Harga    : Rp" + p.getTotalHarga());
+            System.out.println("-----------------------------------");
         }
     }
 

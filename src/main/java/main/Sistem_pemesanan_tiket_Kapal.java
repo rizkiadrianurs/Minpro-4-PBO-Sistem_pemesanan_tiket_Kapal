@@ -13,8 +13,8 @@ import controller.PemesananController;
 public class Sistem_pemesanan_tiket_Kapal {
 
     public static void main(String[] args) {
-
-        PemesananController controller = new PemesananController();
+        PemesananController controller =
+                new PemesananController();
 
         controller.jalankanProgram();
     }
