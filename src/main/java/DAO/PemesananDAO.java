@@ -17,6 +17,78 @@ import model.Pemesanan;
  * @author ACER
  */
 public class PemesananDAO {
+    public int tambah(Pemesanan p) {
+        String sql = "INSERT INTO pemesanan "
+                + "(nama_penumpang, nik, umur, id_kapal, "
+                + "jumlah_tiket, total_harga) "
+                + "VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = Koneksi.getConnection()) {
+            int idKapal = cariIdKapal(conn, p.getNamaKapal());
+
+            try (PreparedStatement pstmt = conn.prepareStatement(
+                    sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+
+                pstmt.setString(1, p.getNamaPenumpang());
+                pstmt.setString(2, p.getNik());
+                pstmt.setInt(3, p.getUmur());
+                pstmt.setInt(4, idKapal);
+                pstmt.setInt(5, p.getJumlahTiket());
+                pstmt.setInt(6, p.getTotalHarga());
+
+                int barisBerubah = pstmt.executeUpdate();
+
+                if (barisBerubah > 0) {
+                    try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                        if (rs.next()) {
+                            System.out.println(
+                                    "Pemesanan berhasil ditambahkan!");
+                            return rs.getInt(1);
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(
+                    "Gagal menambah pemesanan - " + e.getMessage());
+        }
+
+        return 0;
+    }
+
+    public Pemesanan cariPemesananById(int idPemesanan) {
+        String sql = "SELECT p.id_pemesanan, p.nama_penumpang, "
+                + "p.nik, p.umur, p.jumlah_tiket, "
+                + "k.nama_kapal, k.harga_tiket "
+                + "FROM pemesanan p "
+                + "JOIN kapal k ON p.id_kapal = k.id_kapal "
+                + "WHERE p.id_pemesanan = ?";
+
+        try (Connection conn = Koneksi.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, idPemesanan);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Pemesanan(
+                            rs.getInt("id_pemesanan"),
+                            rs.getString("nama_penumpang"),
+                            rs.getString("nik"),
+                            rs.getInt("umur"),
+                            rs.getString("nama_kapal"),
+                            rs.getInt("jumlah_tiket"),
+                            rs.getInt("harga_tiket")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(
+                    "Gagal mencari pemesanan - " + e.getMessage());
+        }
+
+        return null;
+    }
 
     public List<Pemesanan> getAll() {
         List<Pemesanan> daftar = new ArrayList<>();
@@ -29,8 +101,8 @@ public class PemesananDAO {
                 + "ORDER BY p.id_pemesanan";
 
         try (Connection conn = Koneksi.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
                 Pemesanan p = new Pemesanan(
@@ -45,65 +117,12 @@ public class PemesananDAO {
 
                 daftar.add(p);
             }
-
         } catch (SQLException e) {
-            System.out.println("Gagal mengambil data: " + e.getMessage());
+            System.out.println(
+                    "Gagal mengambil data pemesanan - " + e.getMessage());
         }
 
         return daftar;
-    }
-
-    private int cariIdKapal(Connection conn, String namaKapal)
-            throws SQLException {
-
-        String sql = "SELECT id_kapal FROM kapal WHERE nama_kapal = ?";
-
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, namaKapal);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt("id_kapal");
-                }
-            }
-        }
-
-        throw new SQLException("Kapal tidak ditemukan.");
-    }
-
-    public int tambah(Pemesanan p) {
-        String sql = "INSERT INTO pemesanan "
-                + "(nama_penumpang, nik, umur, id_kapal, "
-                + "jumlah_tiket, total_harga) "
-                + "VALUES (?, ?, ?, ?, ?, ?)";
-
-        try (Connection conn = Koneksi.getConnection()) {
-            int idKapal = cariIdKapal(conn, p.getNamaKapal());
-
-            try (PreparedStatement ps = conn.prepareStatement(
-                    sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
-
-                ps.setString(1, p.getNamaPenumpang());
-                ps.setString(2, p.getNik());
-                ps.setInt(3, p.getUmur());
-                ps.setInt(4, idKapal);
-                ps.setInt(5, p.getJumlahTiket());
-                ps.setInt(6, p.getTotalHarga());
-
-                if (ps.executeUpdate() > 0) {
-                    try (ResultSet rs = ps.getGeneratedKeys()) {
-                        if (rs.next()) {
-                            return rs.getInt(1);
-                        }
-                    }
-                }
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Gagal menambah data: " + e.getMessage());
-        }
-
-        return 0;
     }
 
     public boolean ubah(Pemesanan p) {
@@ -115,37 +134,75 @@ public class PemesananDAO {
         try (Connection conn = Koneksi.getConnection()) {
             int idKapal = cariIdKapal(conn, p.getNamaKapal());
 
-            try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                ps.setString(1, p.getNamaPenumpang());
-                ps.setString(2, p.getNik());
-                ps.setInt(3, p.getUmur());
-                ps.setInt(4, idKapal);
-                ps.setInt(5, p.getJumlahTiket());
-                ps.setInt(6, p.getTotalHarga());
-                ps.setInt(7, p.getIdPemesanan());
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, p.getNamaPenumpang());
+                pstmt.setString(2, p.getNik());
+                pstmt.setInt(3, p.getUmur());
+                pstmt.setInt(4, idKapal);
+                pstmt.setInt(5, p.getJumlahTiket());
+                pstmt.setInt(6, p.getTotalHarga());
+                pstmt.setInt(7, p.getIdPemesanan());
 
-                return ps.executeUpdate() > 0;
+                int barisBerubah = pstmt.executeUpdate();
+
+                if (barisBerubah > 0) {
+                    System.out.println(
+                            "Data pemesanan berhasil diubah!");
+                    return true;
+                } else {
+                    System.out.println(
+                            "ID pemesanan tidak ditemukan.");
+                }
             }
-
         } catch (SQLException e) {
-            System.out.println("Gagal mengubah data: " + e.getMessage());
-            return false;
+            System.out.println(
+                    "Gagal mengubah pemesanan - " + e.getMessage());
         }
+
+        return false;
     }
 
     public boolean hapus(int idPemesanan) {
         String sql = "DELETE FROM pemesanan WHERE id_pemesanan = ?";
 
         try (Connection conn = Koneksi.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, idPemesanan);
+            pstmt.setInt(1, idPemesanan);
 
-            return ps.executeUpdate() > 0;
+            int barisBerubah = pstmt.executeUpdate();
 
+            if (barisBerubah > 0) {
+                System.out.println(
+                        "Pemesanan berhasil dihapus!");
+                return true;
+            } else {
+                System.out.println(
+                        "ID pemesanan tidak ditemukan.");
+            }
         } catch (SQLException e) {
-            System.out.println("Gagal menghapus data: " + e.getMessage());
-            return false;
+            System.out.println(
+                    "Gagal menghapus pemesanan - " + e.getMessage());
         }
+
+        return false;
+    }
+
+    private int cariIdKapal(Connection conn, String namaKapal)
+            throws SQLException {
+
+        String sql = "SELECT id_kapal FROM kapal WHERE nama_kapal = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, namaKapal);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("id_kapal");
+                }
+            }
+        }
+
+        throw new SQLException("Kapal tidak ditemukan.");
     }
 }
