@@ -334,7 +334,6 @@ Pada class `Pemesanan`, terdapat dua constructor dengan nama yang sama, yaitu `P
 
 <img width="588" height="253" alt="image" src="https://github.com/user-attachments/assets/2c1aa15d-2ff2-4d81-a1e2-43508daf8108" />
 
-
 | Constructor | Parameter | Keterangan |
 |---|---|---|
 | `Pemesanan(String, String, int, String, int, int)` | 6 parameter (tanpa ID) | Digunakan ketika pemesanan baru dibuat oleh pengguna. ID belum ada karena akan dibuat oleh database saat `INSERT`. |
@@ -415,7 +414,6 @@ Prepared Statement dipakai dengan tanda `?` sebagai placeholder, lalu nilainya d
 
 ### **D. Delete**
 <img width="763" height="561" alt="image" src="https://github.com/user-attachments/assets/db8bd35c-c412-43a6-a994-99434af029c8" />
-
 
 Penjelasan singkat:
 
