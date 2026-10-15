@@ -262,7 +262,7 @@ Pada bagian ini, pengguna memilih menu Keluar untuk mengakhiri program. Sistem m
 
 ---
 
-## Penerapan Konsep Wajib (4 Pilar OOP)
+## Penerapan Konsep Wajib
 
 ### 1. Encapsulation
 
