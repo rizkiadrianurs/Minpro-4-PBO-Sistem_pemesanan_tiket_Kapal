@@ -24,7 +24,7 @@ Berbeda dengan Minpro 3 yang menyimpan data sementara di `ArrayList` (data hilan
 
 ---
 
-## Cara Menjalankan Program
+## Cara Menjalankan Program Pada Database
 
 1. Jalankan MySQL (misalnya melalui XAMPP).
 2. Import file `db_pemesanan_kapal.sql` ke MySQL (lewat phpMyAdmin atau perintah `mysql -u root -p < db_pemesanan_kapal.sql`). File ini membuat database, tabel, sekaligus dummy data.
